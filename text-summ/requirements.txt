@@ -1,0 +1,8 @@
+fastapi==0.78.0
+pytest==7.1.2
+uvicorn==0.17.6
+asyncpg==v0.26.0
+tortoise-orm==0.19.2
+aerich==0.6.3
+pytest==7.1.2
+requests==2.28.1
