@@ -1,0 +1,6 @@
+[run]
+omit = tests/*
+branch = True
+
+[html]
+show_contexts = True

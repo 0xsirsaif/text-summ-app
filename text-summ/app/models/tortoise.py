@@ -1,10 +1,15 @@
-from tortoise import models, fields
+from tortoise import fields, models
+from tortoise.contrib.pydantic import pydantic_model_creator
 
 
-class TextSummarization(models.Model):
+class TextSummary(models.Model):
     url = fields.TextField()
     summary = fields.TextField()
     created_at = fields.DatetimeField(auto_now_add=True)
 
     def __str__(self):
         return self.url
+
+
+# generate a pydantic model from tortoise model
+SummarySchema = pydantic_model_creator(TextSummary)
