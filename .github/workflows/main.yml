@@ -26,29 +26,30 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        ref: main
+        uses: actions/checkout@v3
+        with:
+          ref: main
 
-        - name: Log into Github Packages
-      run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin docker.pkg.github.com
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log into Github Packages
+        run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin docker.pkg.github.com
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        - name: Pull image
-          run: |
-            docker pull ${{ env.IMAGE }}:latest || true
+      - name: Pull image
+        run: |
+          docker pull ${{ env.IMAGE }}:latest || true
 
-        - name: Build image
-          run: |
-            docker build \
-              --cache-from ${{ env.IMAGE }}:latest \
-              --tag ${{ env.IMAGE }}:latest \
-              --file ./text-summ/Dockerfile.prod \
-              "./text-summ"
-        - name: Push image
-          run: |
-            docker push ${{ env.IMAGE }}:latest
+      - name: Build image
+        run: |
+          docker build \
+            --cache-from ${{ env.IMAGE }}:latest \
+            --tag ${{ env.IMAGE }}:latest \
+            --file ./text-summ/Dockerfile.prod \
+            "./text-summ"
+      - name: Push image
+        run: |
+          docker push ${{ env.IMAGE }}:latest
+
   test:
     name: Test Docker Image
     runs-on: ubuntu-latest
