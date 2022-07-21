@@ -17,7 +17,7 @@ env:
   IMAGE: docker.pkg.github.com/$(echo $GITHUB_REPOSITORY | tr '[A-Z]' '[a-z]')/summarizer
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
+  jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -81,7 +81,7 @@ jobs:
         run: |
           docker run \
             -d \
-            --name fastapi-tdd \
+            --name text-summ-app \
             -e PORT=8765 \
             -e ENVIRONMENT=dev \
             -e DATABASE_URL=sqlite://sqlite.db \
@@ -89,10 +89,10 @@ jobs:
             -p 5003:8765 \
             ${{ env.IMAGE }}:latest
       - name: Pytest
-        run: docker exec fastapi-tdd python -m pytest .
+        run: docker exec text-summ-app python -m pytest .
       - name: Flake8
-        run: docker exec fastapi-tdd python -m flake8 .
+        run: docker exec text-summ-app python -m flake8 .
       - name: Black
-        run: docker exec fastapi-tdd python -m black . --check
+        run: docker exec text-summ-app python -m black . --check
       - name: isort
-        run: docker exec fastapi-tdd python -m isort . --check-only
+        run: docker exec text-summ-app python -m isort . --check-only
