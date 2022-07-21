@@ -37,7 +37,7 @@ jobs:
 
       - name: Pull image
         run: |
-          docker pull ${{ env.IMAGE }}:latest || true
+          docker pull ${{ env.IMAGE }}:latest
 
       - name: Build image
         run: |
