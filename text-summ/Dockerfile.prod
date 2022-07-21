@@ -19,9 +19,7 @@ ENV PYTHONUNBUFFERED 1
 ENV ENVIRONMENT prod
 ENV TESTING 0
 
-RUN apt update && apt -y install netcat gcc postgresql && apt clean
-
-RUN rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get -y install netcat gcc postgresql && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # install python dependencies
 RUN pip install --upgrade pip

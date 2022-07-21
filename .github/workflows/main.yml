@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE: docker.pkg.github.com/$(echo $GITHUB_REPOSITORY | tr '[A-Z]' '[a-z]')/summarizer
+  IMAGE: docker.pkg.github.com/0xsirsaif/text-summ-app/summarizer
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -46,9 +46,11 @@ jobs:
             --tag ${{ env.IMAGE }}:latest \
             --file ./text-summ/Dockerfile.prod \
             "./text-summ"
+
       - name: Push image
         run: |
           docker push ${{ env.IMAGE }}:latest
+
 
   test:
     name: Test Docker Image
@@ -90,9 +92,12 @@ jobs:
             ${{ env.IMAGE }}:latest
       - name: Pytest
         run: docker exec text-summ-app python -m pytest .
+
       - name: Flake8
         run: docker exec text-summ-app python -m flake8 .
+
       - name: Black
         run: docker exec text-summ-app python -m black . --check
+
       - name: isort
         run: docker exec text-summ-app python -m isort . --check-only
