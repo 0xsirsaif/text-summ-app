@@ -114,7 +114,7 @@ jobs:
         run: docker exec text-summ-app python -m black .
 
       - name: isort
-        run: docker exec text-summ-app python -m isort . --check-only
+        run: docker exec text-summ-app python -m isort .
 
   deploy:
     name: Deploy to Heroku
