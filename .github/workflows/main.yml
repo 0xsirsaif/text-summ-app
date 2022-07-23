@@ -111,7 +111,7 @@ jobs:
         run: docker exec text-summ-app python -m flake8 .
 
       - name: Black
-        run: docker exec text-summ-app python -m black . --check
+        run: docker exec text-summ-app python -m black .
 
       - name: isort
         run: docker exec text-summ-app python -m isort . --check-only
