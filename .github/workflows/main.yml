@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE: docker.pkg.github.com/0xsirsaif/text-summ-app/summarizer
+  IMAGE: ghcr.io/0xsirsaif/text-summ-app/summarizer
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -30,8 +30,8 @@ jobs:
         with:
           ref: main
 
-      - name: Log into Github Packages
-        run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin docker.pkg.github.com
+      - name: Log into Github Container Registry
+        run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin ghcr.io
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -62,14 +62,14 @@ jobs:
         with:
           ref: main
 
-      - name: Log in to GitHub Packages
-        run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin docker.pkg.github.com
+      - name: Log in to GitHub Container Registry
+        run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin ghcr.io
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull image
         run: |
-          docker pull ${{ env.IMAGE }}:latest || true
+          docker pull ${{ env.IMAGE }}:latest
 
       - name: Build image
         run: |
@@ -90,6 +90,7 @@ jobs:
             -e DATABASE_TEST_URL=sqlite://sqlite.db \
             -p 5003:8765 \
             ${{ env.IMAGE }}:latest
+
       - name: Pytest
         run: docker exec text-summ-app python -m pytest .
 
