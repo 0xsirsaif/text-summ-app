@@ -10,5 +10,5 @@ async def ping(settings: Settings = Depends(get_settings)):
     return {
         "ENVIRONMENT": settings.environment,
         "TESTING": settings.testing,
-        "ping": "saif",
+        "ping": "PONGGGGG!",
     }
