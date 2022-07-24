@@ -39,12 +39,10 @@ jobs:
         run: |
           docker pull ${{ env.IMAGE }}:latest
 
-
-
       - name: Build image
         run: |
           docker build \
-            --cache-from ${{ env.IMAGE }}:latest \
+#            --cache-from ${{ env.IMAGE }}:latest \
             --tag ${{ env.IMAGE }}:latest \
             --file ./text-summ/Dockerfile.prod \
             "./text-summ"
@@ -83,7 +81,7 @@ jobs:
       - name: Build image
         run: |
           docker build \
-            --cache-from ${{ env.IMAGE }}:latest \
+#            --cache-from ${{ env.IMAGE }}:latest \
             --tag ${{ env.IMAGE }}:latest \
             --file ./text-summ/Dockerfile.prod \
             "./text-summ"
@@ -141,7 +139,7 @@ jobs:
       - name: Build image
         run: |
           docker build \
-            --cache-from ${{ env.IMAGE }}:latest \
+#            --cache-from ${{ env.IMAGE }}:latest \
             --tag ${{ env.HEROKU_REGISTRY_IMAGE }}:latest \
             --file ./text-summ/Dockerfile.prod \
             "./text-summ"
