@@ -12,3 +12,4 @@ pytest-cov==3.0.0
 flake8==4.0.1
 black==22.6.0
 isort==5.10.1
+pytest-xdist==2.5.0
