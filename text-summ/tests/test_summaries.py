@@ -2,9 +2,16 @@ import json
 
 import pytest
 
+from app.api import summaries
+
 
 # Create
-def test_create_valid_summary(test_client_with_db):
+def test_create_valid_summary(test_client_with_db, monkeypatch):
+    def mock_generate_summary(summary_id, url):
+        return None
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_client_with_db.post(
         "/summaries/", data=json.dumps({"url": "https://facebook.com"})
     )
@@ -12,24 +19,53 @@ def test_create_valid_summary(test_client_with_db):
     assert response.json()["url"] == "https://facebook.com"
 
 
-def test_create_invalid_summary(test_client_with_db):
-    response = test_client_with_db.post("/summaries/", data=json.dumps({}))
-    assert response.status_code == 422
-    assert response.json() == {
-        "detail": [
+@pytest.mark.parametrize(
+    "summary_id, status, payload, detail",
+    [
+        [
+            1,
+            422,
+            {},
             {
-                "loc": ["body", "url"],
-                "msg": "field required",
-                "type": "value_error.missing",
-            }
-        ]
-    }
+                "detail": [
+                    {
+                        "loc": ["body", "url"],
+                        "msg": "field required",
+                        "type": "value_error.missing",
+                    }
+                ]
+            },
+        ],
+        [
+            2,
+            422,
+            {"url": "invalid://url"},
+            {
+                "detail": [
+                    {
+                        "loc": ["body", "url"],
+                        "msg": "URL scheme not permitted",
+                        "type": "value_error.url.scheme",
+                        "ctx": {"allowed_schemes": ["https", "http"]},
+                    }
+                ]
+            },
+        ],
+    ],
+)
+def test_create_invalid_summary(
+    test_client_with_db, monkeypatch, summary_id, status, payload, detail
+):
+    def mock_generate_summary(mock_summary_id, url):
+        return None
 
-    response = test_client_with_db.post(
-        "/summaries/", data=json.dumps({"url": "invalid://url"})
-    )
-    assert response.status_code == 422
-    assert response.json()["detail"][0]["msg"] == "URL scheme not permitted"
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
+    print(payload)
+
+    response = test_client_with_db.post("/summaries/", data=json.dumps(payload))
+    assert response.status_code == status
+    assert response.json() == detail
 
 
 # Get
@@ -70,10 +106,15 @@ def test_get_non_existed_summary(test_client_with_db):
     }
 
 
-def test_get_all_summaries(test_client_with_db):
+def test_get_all_summaries(test_client_with_db, monkeypatch):
+    def mock_generate_summary(mock_summary_id, url):
+        return None
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     # --- SetUp/Given --- #
     data_posted = test_client_with_db.post(
-        "/summaries/", data=json.dumps({"url": "https://SOSO.com"})
+        "/summaries/", data=json.dumps({"url": "https://facebook.com"})
     )
 
     # --- When --- #
@@ -94,15 +135,20 @@ def test_get_all_summaries(test_client_with_db):
 
 
 # Delete
-def test_delete_certain_summary(test_client_with_db):
+def test_delete_certain_summary(test_client_with_db, monkeypatch):
+    def mock_generate_summary(mock_summary_id, url):
+        return None
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     # Given: add dummy one
     dummy_summary = test_client_with_db.post(
-        "/summaries/", data=json.dumps({"url": "https://saif.exeplains.com/"})
+        "/summaries/", data=json.dumps({"url": "https://facebook.com/"})
     )
     dummy_summary_id = dummy_summary.json()["id"]
 
     assert dummy_summary.status_code == 201
-    assert dummy_summary.json()["url"] == "https://saif.exeplains.com/"
+    assert dummy_summary.json()["url"] == "https://facebook.com/"
 
     # Then: Delete it
     response = test_client_with_db.delete(f"/summaries/{dummy_summary_id}/")
@@ -111,7 +157,7 @@ def test_delete_certain_summary(test_client_with_db):
     assert response.status_code == 200
     assert response.json() == {
         "id": dummy_summary_id,
-        "url": "https://saif.exeplains.com/",
+        "url": "https://facebook.com/",
     }
 
 
@@ -138,7 +184,12 @@ def test_delete_invalid_summary(test_client_with_db):
 
 
 # Update
-def test_update_summary(test_client_with_db):
+def test_update_summary(test_client_with_db, monkeypatch):
+    def mock_generate_summary(mock_summary_id, url):
+        return None
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_client_with_db.post(
         "/summaries/", data=json.dumps({"url": "https://foo.bar"})
     )
@@ -191,7 +242,12 @@ def test_update_summary_invalid_json(test_client_with_db):
     }
 
 
-def test_update_summary_invalid_keys(test_client_with_db):
+def test_update_summary_invalid_keys(test_client_with_db, monkeypatch):
+    def mock_generate_summary(mock_summary_id, url):
+        return None
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_client_with_db.post(
         "/summaries/", data=json.dumps({"url": "https://foo.bar"})
     )

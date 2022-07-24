@@ -2,13 +2,14 @@ from typing import List
 
 from fastapi import HTTPException
 
-from app.models.pydantic import (SummaryPayloadSchema,
-                                 SummaryUpdatePayloadSchema)
+from app.models.pydantic import SummaryPayloadSchema
 from app.models.tortoise import TextSummary
+
+from app.models.pydantic import SummaryUpdatePayloadSchema  # isort: skip
 
 
 async def post(payload: SummaryPayloadSchema):
-    summary = TextSummary(url=payload.url, summary="Dummy..")
+    summary = TextSummary(url=payload.url, summary="")
     await summary.save()
     return summary.id
 
