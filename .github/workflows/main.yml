@@ -104,7 +104,7 @@ jobs:
         run: docker exec text-summ-app python -m pytest .
 
       - name: Flake8
-        run: docker exec text-summ-app python -m flake8 .
+        run: docker exec text-summ-app python -m flake8 --exclude=tests/ .
 
       - name: Black
         run: docker exec text-summ-app python -m black .
