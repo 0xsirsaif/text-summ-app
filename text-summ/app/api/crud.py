@@ -2,10 +2,12 @@ from typing import List
 
 from fastapi import HTTPException
 
-from app.models.pydantic import SummaryPayloadSchema
 from app.models.tortoise import TextSummary
 
-from app.models.pydantic import SummaryUpdatePayloadSchema  # isort: skip
+from app.models.pydantic import (  # isort:skip
+    SummaryPayloadSchema,
+    SummaryUpdatePayloadSchema,
+)
 
 
 async def post(payload: SummaryPayloadSchema):
